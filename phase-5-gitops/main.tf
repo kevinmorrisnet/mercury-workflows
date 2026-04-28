@@ -14,12 +14,12 @@ terraform {
 
 provider "azurerm" {
   features {}
-  subscription_id = "c9f99369-d202-458b-9a97-4c95a5cbc20c"
+  subscription_id = "ebd65017-70b2-4be7-9ddc-5f19a15d7bc0"
 }
 
 resource "azurerm_resource_group" "aks" {
   name     = "rg-cloud-course-aks"
-  location = "North Europe"
+  location = "centralus"
 }
 
 resource "azurerm_kubernetes_cluster" "main" {
@@ -27,12 +27,12 @@ resource "azurerm_kubernetes_cluster" "main" {
   location            = azurerm_resource_group.aks.location
   resource_group_name = azurerm_resource_group.aks.name
   dns_prefix          = "staging"
-  kubernetes_version  = "1.32.0"
+  kubernetes_version  = "1.35.0"
 
   default_node_pool {
     name       = "default"
     node_count = 2
-    vm_size    = "Standard_D2s_v3"
+    vm_size    = "Standard_D2alds_v7"
   }
 
   identity {
