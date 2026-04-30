@@ -14,12 +14,12 @@ terraform {
 
 provider "azurerm" {
   features {}
-  subscription_id = "c9f99369-d202-458b-9a97-4c95a5cbc20c"
+  subscription_id = "ebd65017-70b2-4be7-9ddc-5f19a15d7bc0"
 }
 
 resource "azurerm_resource_group" "aks" {
   name     = "rg-cloud-course-aks"
-  location = "North Europe"
+  location = "centralus"
 }
 
 resource "azurerm_kubernetes_cluster" "main" {
@@ -27,13 +27,13 @@ resource "azurerm_kubernetes_cluster" "main" {
   location            = azurerm_resource_group.aks.location
   resource_group_name = azurerm_resource_group.aks.name
   dns_prefix          = "staging"
-  kubernetes_version  = "1.32.1"
+  kubernetes_version  = "1.35.0"
+  oidc_issuer_enabled = true
 
   default_node_pool {
-    name                 = "default"
-    orchestrator_version = "1.32.1"
-    node_count           = 2
-    vm_size              = "Standard_D2s_v3"
+    name       = "default"
+    node_count = 2
+    vm_size    = "Standard_D2alds_v7"
   }
 
   identity {
@@ -66,7 +66,7 @@ resource "azurerm_kubernetes_flux_configuration" "main" {
   namespace  = "flux-system"
 
   git_repository {
-    url             = "ssh://git@github.com/mischavandenburg/mercury-gitops"
+    url             = "ssh://git@github.com/kevinmorrisnet/mercury-gitops"
     reference_type  = "branch"
     reference_value = "main"
 
@@ -106,7 +106,7 @@ resource "azurerm_kubernetes_flux_configuration" "main" {
 data "azurerm_client_config" "current" {}
 
 resource "azurerm_key_vault" "mercury_vault" {
-  name                = "kv-mercury-staging"
+  name                = "kv-mercury-staging-km"
   location            = azurerm_resource_group.aks.location
   resource_group_name = azurerm_resource_group.aks.name
   tenant_id           = data.azurerm_client_config.current.tenant_id

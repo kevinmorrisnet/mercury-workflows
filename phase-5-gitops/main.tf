@@ -28,6 +28,7 @@ resource "azurerm_kubernetes_cluster" "main" {
   resource_group_name = azurerm_resource_group.aks.name
   dns_prefix          = "staging"
   kubernetes_version  = "1.35.0"
+  oidc_issuer_enabled = true
 
   default_node_pool {
     name       = "default"
@@ -65,7 +66,7 @@ resource "azurerm_kubernetes_flux_configuration" "main" {
   namespace  = "flux-system"
 
   git_repository {
-    url             = "ssh://git@github.com/mischavandenburg/mercury-gitops"
+    url             = "ssh://git@github.com/kevinmorrisnet/mercury-gitops"
     reference_type  = "branch"
     reference_value = "main"
 
@@ -105,7 +106,7 @@ resource "azurerm_kubernetes_flux_configuration" "main" {
 data "azurerm_client_config" "current" {}
 
 resource "azurerm_key_vault" "mercury_vault" {
-  name                = "kv-mercury-staging"
+  name                = "kv-mercury-staging-km"
   location            = azurerm_resource_group.aks.location
   resource_group_name = azurerm_resource_group.aks.name
   tenant_id           = data.azurerm_client_config.current.tenant_id
